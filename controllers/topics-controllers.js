@@ -5,22 +5,23 @@ exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
         res.status(200).send({ topics })
     })
+    .catch((err) => {
+        next(err)
+    })
 }
 
 exports.getEndpoints = (req, res, next) => {
     res.status(200).send(endpointDescriptions)
+    .catch((err) => {
+        next(err)
+    })
 }
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params
     selectArticleById(article_id).then((article) => {
-        if (!article) {
-            next({status: 404, msg: 'article does not exist'})
-        } else {
-            res.status(200).send({ article })
-        }
-    })
-    .catch((err) => {
+        res.status(200).send({ article })
+    }).catch((err) => {
         next(err)
     })
 }
