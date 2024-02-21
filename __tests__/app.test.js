@@ -83,11 +83,12 @@ describe('/api/articles/:article_id', () => {
       });
 })
 describe('/api/articles', () => {
-    test('GET:200 sends an array of article objects to the client', () => {
+    test.only('GET:200 sends an array of article objects to the client', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
         .then((response) => {
+            expect(response.body.articles[0].comment_count).toBe("2")
             expect(response.body.articles.length).toBe(13)
             response.body.articles.forEach((article) => {
                 expect(typeof article.article_id).toBe('number')
@@ -98,6 +99,7 @@ describe('/api/articles', () => {
                 expect(typeof article.votes).toBe('number')
                 expect(typeof article.article_img_url).toBe('string')
                 expect(typeof article.comment_count).toBe('string')
+                expect(article).not.toHaveProperty('body')
             })
         })
     })
