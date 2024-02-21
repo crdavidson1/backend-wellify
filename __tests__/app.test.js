@@ -83,7 +83,7 @@ describe('/api/articles/:article_id', () => {
       });
 })
 describe('/api/articles', () => {
-    test.only('GET:200 sends an array of article objects to the client', () => {
+    test('GET:200 sends an array of article objects to the client', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -111,4 +111,38 @@ describe('/api/articles', () => {
             expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
         })
     })
+})
+describe('api/articles/:article_id/comments', () => {
+    test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.comments).toBeSortedBy('created_at', {descending: true})
+            response.body.comments.forEach((comment) => {
+                expect(typeof comment.comment_id).toBe('number')
+                expect(typeof comment.votes).toBe('number');
+                expect(typeof comment.created_at).toBe('string');
+                expect(typeof comment.author).toBe('string')
+                expect(typeof comment.body).toBe('string')
+                expect(typeof comment.article_id).toBe('number')
+            })
+        })
+    })
+    test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('article does not exist or does not have any associated comments');
+          });
+      });
+      test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
+        return request(app)
+          .get('/api/articles/not-a-team/comments')
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+          });
+      });
 })
