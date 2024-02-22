@@ -147,10 +147,110 @@ describe.only('api/articles/:article_id/comments', () => {
     });
     test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
         return request(app)
-          .get('/api/articles/not-a-team/comments')
+          .get('/api/articles/not-an-id/comments')
           .expect(400)
           .then((response) => {
             expect(response.body.msg).toBe('Bad request');
           });
+    });
+    test('POST:201 inserts a new comment to the comments database and sends the new comment back to the client', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+            username: "rogersop",
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.comment.comment_id).toBe(19)
+            expect(response.body.comment.body).toBe("Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.")
+            expect(response.body.comment.author).toBe('rogersop')
+            expect(response.body.comment.article_id).toBe(1)
+            expect(response.body.comment.votes).toBe(0)
+            expect(response.body.comment).toHaveProperty('created_at')
+        })
+    })
+    test('POST:201 ignores unnecessary properties', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+            username: "rogersop",
+            hobbies: 'tennis'
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then((response) => {
+            expect(response.body.comment.comment_id).toBe(19)
+            expect(response.body.comment.body).toBe("Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.")
+            expect(response.body.comment.author).toBe('rogersop')
+            expect(response.body.comment.article_id).toBe(1)
+            expect(response.body.comment.votes).toBe(0)
+            expect(response.body.comment).toHaveProperty('created_at')
+        })
+    })
+    test('POST:400 responds with an appropriate status and error message when provided with an imcomplete comment object (no username)', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus."
+        }
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+        });
+    });
+    test('POST:400 responds with an appropriate status and error message when provided with an imcomplete comment object (no body)', () => {
+        const newComment = {
+            username: "rogersop",
+        }
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+        });
+    });
+    test('POST:404 responds with an appropriate status and error message when given a valid article_id that does not exist', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+            username: "rogersop",
+        }
+        return request(app)
+          .post('/api/articles/999/comments')
+          .send(newComment)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('article does not exist');
+        });
+    });
+    test('POST:400 responds with an appropriate status and error message when given an invalid article_id', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+            username: "rogersop",
+        }
+        return request(app)
+          .post('/api/articles/not-an-id/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+        });
+    });
+    test('POST:404 responds with an appropriate status and error message when username does not exist', () => {
+        const newComment = {
+            body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+            username: "test123",
+        }
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('article does not exist');
+        });
     });
 })
