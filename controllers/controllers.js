@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectCommentsById} = require('../models/topics-models.js')
+const {selectTopics, selectArticleById, selectArticles, selectCommentsById} = require('../models/models.js')
 const endpointDescriptions = require('../endpoints.json')
 
 exports.getTopics = (req, res, next) => {
