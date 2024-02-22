@@ -7,7 +7,7 @@ const {
   getArticles,
   getCommentsById,
   postComment
-} = require('./controllers/topics-controllers')
+} = require('./controllers/controllers')
 
 app.use(express.json())
 

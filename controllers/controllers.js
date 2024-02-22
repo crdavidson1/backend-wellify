@@ -4,7 +4,7 @@ const {
     selectArticles,
     selectCommentsById,
     insertComment
-} = require('../models/topics-models.js')
+} = require('../models/models.js')
 const endpointDescriptions = require('../endpoints.json')
 
 exports.getTopics = (req, res, next) => {
