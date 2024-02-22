@@ -23,10 +23,13 @@ exports.selectArticleById = (article_id) => {
 }
 
 exports.selectCommentsById = (article_id) => {
-    return db.query('SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;', [article_id])
+    return db.query('SELECT comments.* FROM comments RIGHT JOIN articles ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id, comments.comment_id ORDER BY created_at DESC;', [article_id])
     .then((result) => {
         if(result.rows.length === 0) {
-            return Promise.reject({status: 404, msg: 'article does not exist or does not have any associated comments'})
+            return Promise.reject({status: 404, msg: 'article does not exist'})
+        }
+        if(result.rows[0].comment_id === null) {
+            return []
         }
         return result.rows
     })

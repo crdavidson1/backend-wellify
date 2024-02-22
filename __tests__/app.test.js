@@ -112,7 +112,7 @@ describe('/api/articles', () => {
         })
     })
 })
-describe('api/articles/:article_id/comments', () => {
+describe.only('api/articles/:article_id/comments', () => {
     test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
         return request(app)
         .get('/api/articles/3/comments')
@@ -125,24 +125,32 @@ describe('api/articles/:article_id/comments', () => {
                 expect(typeof comment.created_at).toBe('string');
                 expect(typeof comment.author).toBe('string')
                 expect(typeof comment.body).toBe('string')
-                expect(typeof comment.article_id).toBe('number')
+                expect(comment.article_id).toBe(3)
             })
         })
     })
-    test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+    test('GET:200 sends an empty array when given a valid article id which has no associated comments', () => {
         return request(app)
           .get('/api/articles/2/comments')
+          .expect(200)
+          .then((response) => {
+            expect(response.body.comments).toEqual([]);
+          });
+    })
+    test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        return request(app)
+          .get('/api/articles/999/comments')
           .expect(404)
           .then((response) => {
-            expect(response.body.msg).toBe('article does not exist or does not have any associated comments');
+            expect(response.body.msg).toBe('article does not exist');
           });
-      });
-      test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
+    });
+    test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
         return request(app)
           .get('/api/articles/not-a-team/comments')
           .expect(400)
           .then((response) => {
             expect(response.body.msg).toBe('Bad request');
           });
-      });
+    });
 })
