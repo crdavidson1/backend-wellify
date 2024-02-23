@@ -10,14 +10,12 @@ exports.selectTopics = () => {
 exports.selectArticles = (topic) => {
     const validTopics = ['mitch', 'cats', 'paper', undefined]
     let whereTopics = ''
-    console.log('test')
     if (!validTopics.includes(topic)) {
         return Promise.reject({status: 400, msg: 'topic does not exist'})
     }
     if (topic) {
         whereTopics =  format('WHERE articles.topic = %L', topic)
     }
-    console.log('whereTopics')
     const selectStr = 'SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id '
     const groupByStr = ' GROUP BY articles.article_id ORDER BY created_at DESC;'
     queryStr = selectStr + whereTopics + groupByStr
