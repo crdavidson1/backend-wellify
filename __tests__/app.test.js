@@ -81,6 +81,46 @@ describe('/api/articles/:article_id', () => {
             expect(response.body.msg).toBe('Bad request');
           });
     });
+    test('PATCH:200 increases the votes property on an article by a given value', () => {
+        const newVotes = {inc_votes: 10}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVotes)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.comment.votes).toBe(110)
+        })
+    })
+    test('PATCH:200 decreases the votes property on an article by a given negative value', () => {
+        const newVotes = {inc_votes: -10}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVotes)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.comment.votes).toBe(90)
+        })
+    })
+    test('PATCH:400 sends an appropriate status and error message when given an invalid id', () => {
+        const newVotes = {inc_votes: -10}
+        return request(app)
+          .patch('/api/articles/not-a-team')
+          .send(newVotes)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+          });
+    });
+    test('PATCH:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        const newVotes = {inc_votes: -10}
+        return request(app)
+          .patch('/api/articles/999')
+          .send(newVotes)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('article does not exist');
+          });
+    });
 })
 describe('/api/articles', () => {
     test('GET:200 sends an array of article objects to the client', () => {

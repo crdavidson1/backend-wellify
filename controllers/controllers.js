@@ -62,3 +62,13 @@ exports.postComment = (req, res, next) => {
     })
 }
 
+exports.patchArticle = (req, res, next) => {
+    const newVote = req.body
+    const { article_id } = req.params
+    updateArticle(newVote, article_id).then((comment) => {
+        res.status(200).send({ comment })
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
