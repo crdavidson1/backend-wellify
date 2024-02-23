@@ -65,6 +65,14 @@ describe('/api/articles/:article_id', () => {
             expect(response.body.article.article_img_url).toBe('https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700')
         })
     })
+    test('GET:200 sends a single article to the client with a comment count property', () => {
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.article.comment_count).toBe('11')
+        })
+    })
     test('GET:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
         return request(app)
           .get('/api/articles/999')
