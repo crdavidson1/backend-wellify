@@ -121,6 +121,40 @@ describe('/api/articles/:article_id', () => {
             expect(response.body.msg).toBe('article does not exist');
           });
     });
+    test('PATCH:204 sends no response when given an empty object', () => {
+        const newVotes = {}
+        return request(app)
+          .patch('/api/articles/3')
+          .send(newVotes)
+          .expect(204)
+    })
+    test('PATCH:204 sends no response when given an empty array', () => {
+        const newVotes = []
+        return request(app)
+          .patch('/api/articles/3')
+          .send(newVotes)
+          .expect(204)
+    })
+    test('PATCH:400 sends an appropriate status and error message when given an object with an invalid key', () => {
+        const newVotes = {hobbies: 'tennis'}
+        return request(app)
+          .patch('/api/articles/3')
+          .send(newVotes)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe('Bad request');
+          });
+    });
+    test('PATCH:200 ignores unnecessary properties', () => {
+        const newVotes = {inc_votes: 10, hobbies: 'golf', author: 'test'}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVotes)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.comment.votes).toBe(110)
+        })
+    })
 })
 describe('/api/articles', () => {
     test('GET:200 sends an array of article objects to the client', () => {
@@ -152,7 +186,7 @@ describe('/api/articles', () => {
         })
     })
 })
-describe('api/articles/:article_id/comments', () => {
+describe('/api/articles/:article_id/comments', () => {
     test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
         return request(app)
         .get('/api/articles/3/comments')
@@ -230,7 +264,7 @@ describe('api/articles/:article_id/comments', () => {
             expect(response.body.comment).toHaveProperty('created_at')
         })
     })
-    test('POST:400 responds with an appropriate status and error message when provided with an imcomplete comment object (no username)', () => {
+    test('POST:400 responds with an appropriate status and error message when provided with an incomplete comment object (no username)', () => {
         const newComment = {
             body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus."
         }
@@ -242,7 +276,7 @@ describe('api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe('Bad request');
         });
     });
-    test('POST:400 responds with an appropriate status and error message when provided with an imcomplete comment object (no body)', () => {
+    test('POST:400 responds with an appropriate status and error message when provided with an incomplete comment object (no body)', () => {
         const newComment = {
             username: "rogersop",
         }
