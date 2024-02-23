@@ -8,19 +8,22 @@ exports.selectTopics = () => {
 }
 
 exports.selectArticles = (topic) => {
-    const validTopics = ['mitch', 'cats', 'paper', undefined]
-    let whereTopics = ''
-    if (!validTopics.includes(topic)) {
-        return Promise.reject({status: 400, msg: 'topic does not exist'})
-    }
-    if (topic) {
-        whereTopics =  format('WHERE articles.topic = %L', topic)
-    }
-    const selectStr = 'SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id '
-    const groupByStr = ' GROUP BY articles.article_id ORDER BY created_at DESC;'
-    queryStr = selectStr + whereTopics + groupByStr
-    return db.query(queryStr).then((result) => {
-        return result.rows
+    return db.query('SELECT slug FROM topics;').then((result) => {
+        const validTopics = result.rows.map((topic)=>Object.values(topic)[0])
+        validTopics.push(undefined)
+        let whereTopics = ''
+        if (!validTopics.includes(topic)) {
+            return Promise.reject({status: 400, msg: 'topic does not exist'})
+        }
+        if (topic) {
+            whereTopics =  format('WHERE articles.topic = %L', topic)
+        }
+        const selectStr = 'SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id '
+        const groupByStr = ' GROUP BY articles.article_id ORDER BY created_at DESC;'
+        queryStr = selectStr + whereTopics + groupByStr
+        return db.query(queryStr).then((result) => {
+            return result.rows
+        })
     })
 }
 
