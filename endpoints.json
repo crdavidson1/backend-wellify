@@ -72,6 +72,10 @@
   "POST /api/articles/:article_id/comments": {
     "description": "inserts a new comment to the comments database and sends the new comment back to the client",
     "queries": [],
+    "exampleBody": {
+      "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
+      "username": "rogersop"
+    },
     "exampleResponse": {
         "comment": {
           "comment_id": 19,
@@ -81,6 +85,47 @@
           "votes": 0,
           "created_at": "2024-02-21T21:15:37.535Z"
         }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "increases the votes property on an article by a given value and returns the new article",
+    "queries": [],
+    "exampleBody": {
+      "inc_votes": 10
+    },
+    "exampleResponse": {
+        "article": {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 110,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the specified comment and sends no body back",
+    "queries": []
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "article_id": 7,
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          "comment_count": 6
+        }
+      ]
     }
   }
 }

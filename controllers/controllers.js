@@ -5,7 +5,8 @@ const {
     selectCommentsById,
     insertComment,
     updateArticle,
-    removeComment
+    removeComment,
+    selectUsers
 } = require('../models/models.js')
 const endpointDescriptions = require('../endpoints.json')
 
@@ -21,6 +22,15 @@ exports.getTopics = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
     selectArticles().then((articles) => {
         res.status(200).send({ articles })
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+exports.getUsers = (req, res, next) => {
+    selectUsers().then((users) => {
+        res.status(200).send({ users })
     })
     .catch((err) => {
         next(err)
@@ -69,8 +79,8 @@ exports.patchArticle = (req, res, next) => {
     }
     const newVote = req.body
     const { article_id } = req.params
-    updateArticle(newVote, article_id).then((comment) => {
-        res.status(200).send({ comment })
+    updateArticle(newVote, article_id).then((article) => {
+        res.status(200).send({ article })
     })
     .catch((err) => {
         next(err)
