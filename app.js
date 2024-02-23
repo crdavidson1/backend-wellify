@@ -6,7 +6,8 @@ const {
   getArticleById,
   getArticles,
   getCommentsById,
-  postComment
+  postComment,
+  patchArticle
 } = require('./controllers/controllers')
 
 app.use(express.json())

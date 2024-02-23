@@ -41,3 +41,4 @@ exports.insertComment = ({ body, username}, article_id) => {
         return result.rows[0]
     })
 }
+

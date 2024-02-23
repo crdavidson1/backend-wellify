@@ -72,15 +72,15 @@ describe('/api/articles/:article_id', () => {
           .then((response) => {
             expect(response.body.msg).toBe('article does not exist');
           });
-      });
-      test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
+    });
+    test('GET:400 sends an appropriate status and error message when given an invalid id', () => {
         return request(app)
           .get('/api/articles/not-a-team')
           .expect(400)
           .then((response) => {
             expect(response.body.msg).toBe('Bad request');
           });
-      });
+    });
 })
 describe('/api/articles', () => {
     test('GET:200 sends an array of article objects to the client', () => {
@@ -112,7 +112,7 @@ describe('/api/articles', () => {
         })
     })
 })
-describe.only('api/articles/:article_id/comments', () => {
+describe('api/articles/:article_id/comments', () => {
     test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
         return request(app)
         .get('/api/articles/3/comments')

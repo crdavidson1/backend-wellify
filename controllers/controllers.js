@@ -3,7 +3,8 @@ const {
     selectArticleById,
     selectArticles,
     selectCommentsById,
-    insertComment
+    insertComment,
+    updateArticle
 } = require('../models/models.js')
 const endpointDescriptions = require('../endpoints.json')
 
@@ -60,3 +61,4 @@ exports.postComment = (req, res, next) => {
         next(err)
     })
 }
+
