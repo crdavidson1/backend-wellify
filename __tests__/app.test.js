@@ -185,6 +185,32 @@ describe('/api/articles', () => {
             expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
         })
     })
+    test('GET:200 should be able to take a query specifying an article topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then((response) => {
+            response.body.articles.forEach((article) => {
+                expect(article.topic).toBe('cats')
+            })
+        })
+    })
+    test('GET:400 sends an appropriate status and error message when given an invalid topic query', () => {
+        return request(app)
+        .get('/api/articles?topic=tennis')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toEqual('topic does not exist')
+        })
+    })
+    test('GET:200 should return an empty array if given a valid topic query with no associated articles', () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toEqual([])
+        })
+    })
 })
 describe('/api/articles/:article_id/comments', () => {
     test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
