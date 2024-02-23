@@ -7,7 +7,8 @@ const {
   getArticles,
   getCommentsById,
   postComment,
-  patchArticle
+  patchArticle,
+  deleteComment
 } = require('./controllers/controllers')
 
 app.use(express.json())
@@ -23,6 +24,8 @@ app.patch('/api/articles/:article_id', patchArticle)
 
 app.get('/api/articles/:article_id/comments', getCommentsById)
 app.post('/api/articles/:article_id/comments', postComment)
+
+app.delete('/api/comments/:comment_id', deleteComment)
 
 app.get('*', function(req, res){
   res.status(404).send({msg:'Not found'});

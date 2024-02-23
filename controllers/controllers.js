@@ -4,7 +4,8 @@ const {
     selectArticles,
     selectCommentsById,
     insertComment,
-    updateArticle
+    updateArticle,
+    removeComment
 } = require('../models/models.js')
 const endpointDescriptions = require('../endpoints.json')
 
@@ -75,3 +76,13 @@ exports.patchArticle = (req, res, next) => {
         next(err)
     })
 }
+
+exports.deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComment(comment_id).then((err) => {
+        res.status(204).send();
+    })
+    .catch((err)=>{
+      next(err)
+    })
+};
