@@ -88,7 +88,7 @@ describe('/api/articles/:article_id', () => {
         .send(newVotes)
         .expect(200)
         .then((response) => {
-            expect(response.body.comment.votes).toBe(110)
+            expect(response.body.article.votes).toBe(110)
         })
     })
     test('PATCH:200 decreases the votes property on an article by a given negative value', () => {
@@ -98,7 +98,7 @@ describe('/api/articles/:article_id', () => {
         .send(newVotes)
         .expect(200)
         .then((response) => {
-            expect(response.body.comment.votes).toBe(90)
+            expect(response.body.article.votes).toBe(90)
         })
     })
     test('PATCH:400 sends an appropriate status and error message when given an invalid id', () => {
@@ -152,7 +152,7 @@ describe('/api/articles/:article_id', () => {
         .send(newVotes)
         .expect(200)
         .then((response) => {
-            expect(response.body.comment.votes).toBe(110)
+            expect(response.body.article.votes).toBe(110)
         })
     })
 })
@@ -230,7 +230,7 @@ describe('/api/articles/:article_id/comments', () => {
     test('POST:201 inserts a new comment to the comments database and sends the new comment back to the client', () => {
         const newComment = {
             body: "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
-            username: "rogersop",
+            username: "rogersop"
         }
         return request(app)
         .post('/api/articles/1/comments')
@@ -348,4 +348,19 @@ describe('/api/comments/:comment_id', () => {
             expect(response.body.msg).toBe('Bad request');
         });
     });  
+})
+describe('/api/users', () => {
+    test('GET:200 sends an array of user objects to the client', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.users.length).toBe(4)
+            response.body.users.forEach((user) => {
+                expect(typeof user.username).toBe('string')
+                expect(typeof user.name).toBe('string')
+                expect(typeof user.avatar_url).toBe('string')
+            })
+        })
+    })
 })
