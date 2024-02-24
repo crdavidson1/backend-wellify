@@ -219,6 +219,30 @@ describe('/api/articles', () => {
             expect(response.body.articles).toEqual([])
         })
     })
+    test('GET:200 should sort the array of article objects by created_at date in descending order unless given a query', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('created_at', {coerce: true, descending: true})
+        })
+    })
+    test('GET:200 should sort the array of article objects by a given query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=comment_count')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('comment_count', {coerce: true, descending: true})
+        })
+    })
+    test('GET:200 should sort the array of article objects in the order of a given query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=comment_count&order=asc')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.articles).toBeSortedBy('comment_count', {coerce: true, descending: false})
+        })
+    })
 })
 describe('/api/articles/:article_id/comments', () => {
     test('GET:200 sends all of the comments from an article to the client with all the desired properties sorted by recency', () => {
