@@ -7,20 +7,24 @@ exports.selectTopics = () => {
     })
 }
 
-exports.selectArticles = (topic) => {
+exports.selectArticles = (topic, sort_by='created_at', order='DESC') => {
     return db.query('SELECT slug FROM topics;').then((result) => {
         const validTopics = result.rows.map((topic)=>Object.values(topic)[0])
+        const validSortBys = ['article_id', 'author', 'title', 'topic', 'created_at', 'votes', 'comment_count']
+        const validOrders = ['ASC', 'DESC']
         validTopics.push(undefined)
         let whereTopics = ''
-        if (!validTopics.includes(topic)) {
+        if (!validTopics.includes(topic) || !validSortBys.includes(sort_by || !validOrders.includes(sort_by.toUpperCase()))) {
             return Promise.reject({status: 400, msg: 'topic does not exist'})
         }
         if (topic) {
             whereTopics =  format('WHERE articles.topic = %L', topic)
         }
         const selectStr = 'SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id '
-        const groupByStr = ' GROUP BY articles.article_id ORDER BY created_at DESC;'
-        queryStr = selectStr + whereTopics + groupByStr
+        const groupByStr = ' GROUP BY articles.article_id '
+        const orderByStr = format('ORDER BY %I %s;', sort_by, order)
+        console.log(orderByStr)
+        queryStr = selectStr + whereTopics + groupByStr + orderByStr
         return db.query(queryStr).then((result) => {
             return result.rows
         })
