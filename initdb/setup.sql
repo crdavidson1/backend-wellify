@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS wellify;
+
+CREATE DATABASE wellify;
