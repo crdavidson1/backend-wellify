@@ -2,16 +2,18 @@ const cors = require('cors')
 const express = require('express')
 const app = express()
 const {
-  getCustomers, getEvents,
+  getUsers, getEvents, getEventsByUser,
 } = require('./controllers/controllers')
 
 app.use(cors())
 
 app.use(express.json())
 
-app.get('/customers', getCustomers)
+app.get('/users', getUsers)
 
 app.get('/events', getEvents)
+
+app.get('/events/:user_id', getEventsByUser)
 
 app.get('*', function(req, res){
   res.status(404).send({msg:'Not found'});
