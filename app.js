@@ -2,7 +2,7 @@ const cors = require('cors')
 const express = require('express')
 const app = express()
 const {
-  getUsers, getEvents, getEventsByUser,
+  getUsers, getPostureEvents, getPostureEventsByUser, getEmotionEventsByUser,
 } = require('./controllers/controllers')
 
 app.use(cors())
@@ -11,9 +11,11 @@ app.use(express.json())
 
 app.get('/users', getUsers)
 
-app.get('/events', getEvents)
+app.get('/events/posture', getPostureEvents)
 
-app.get('/events/:user_id', getEventsByUser)
+app.get('/events/posture/:user_id', getPostureEventsByUser)
+
+app.get('/events/emotion/:user_id', getEmotionEventsByUser)
 
 app.get('*', function(req, res){
   res.status(404).send({msg:'Not found'});

@@ -1,7 +1,8 @@
 const {
     selectUsers,
-    selectEvents,
-    selectEventsByUser
+    selectPostureEvents,
+    selectPostureEventsByUser,
+    selectEmotionEventsByUser,
 } = require('../models/models.js')
 
 exports.getUsers = (req, res, next) => {
@@ -13,8 +14,8 @@ exports.getUsers = (req, res, next) => {
     })
 }
 
-exports.getEvents = (req, res, next) => {
-    selectEvents().then((events) => {
+exports.getPostureEvents = (req, res, next) => {
+    selectPostureEvents().then((events) => {
         res.status(200).send({ events })
     })
     .catch((err) => {
@@ -22,9 +23,19 @@ exports.getEvents = (req, res, next) => {
     })
 }
 
-exports.getEventsByUser = (req, res, next) => {
+exports.getPostureEventsByUser = (req, res, next) => {
     const { user_id } = req.params
-    selectEventsByUser(user_id).then((events) => {
+    selectPostureEventsByUser(user_id).then((events) => {
+        res.status(200).send({ events })
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+exports.getEmotionEventsByUser = (req, res, next) => {
+    const { user_id } = req.params
+    selectEmotionEventsByUser(user_id).then((events) => {
         res.status(200).send({ events })
     })
     .catch((err) => {

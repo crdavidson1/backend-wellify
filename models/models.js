@@ -6,14 +6,20 @@ exports.selectUsers = () => {
     })
 }
 
-exports.selectEvents = () => {
-    return db.query('SELECT * FROM wellify.events;').then((result) => {
+exports.selectPostureEvents = () => {
+    return db.query('SELECT * FROM wellify.posture_events;').then((result) => {
         return result.rows
     })
 }
 
-exports.selectEventsByUser = (user_id) => {
-    return db.query('SELECT * FROM wellify.events WHERE user_id = $1;', [user_id]).then((result) => {
+exports.selectPostureEventsByUser = (user_id) => {
+    return db.query('SELECT * FROM wellify.posture_events WHERE user_id = $1;', [user_id]).then((result) => {
+        return result.rows
+    })
+}
+
+exports.selectEmotionEventsByUser = (user_id) => {
+    return db.query('SELECT * FROM wellify.emotion_events WHERE user_id = $1;', [user_id]).then((result) => {
         return result.rows
     })
 }
